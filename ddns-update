@@ -53,4 +53,4 @@ source ~/.namecheap_file.sh
 response=$(curl -s "https://dynamicdns.park-your-domain.com/update?host=$host&domain=$domain&password=$password&ip=$ip")
 log $response
 echo $ip > $LAST_IP_FILE
-echo 0
+exit 0
