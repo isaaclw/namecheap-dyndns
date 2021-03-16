@@ -27,8 +27,15 @@ while getopts "qfwh" flag; do
 done
 
 log() {
-    if [ -z "$QUIET" ]; then
-        echo "$@"
+    errors="$2"
+    xml="$3"
+
+    if [ -n "$errors" ] || [ -z "$QUIET" ]; then
+        echo "$1"
+    fi | if [ "$xml" == 'xml' ] && which xmllint > /dev/null; then
+        xmllint --format -
+    else
+        cat
     fi
 }
 
@@ -51,6 +58,13 @@ log "DDNS-UPDATE: Public IP is: $ip, Updating IP..."
 source ~/.namecheap_file.sh
 
 response=$(curl -s "https://dynamicdns.park-your-domain.com/update?host=$host&domain=$domain&password=$password&ip=$ip")
-log $response
+if which xmlstarlet > /dev/null; then
+    errors=$(echo "$response" | xmlstarlet sel -t -m '//ErrCount' -v . -n)
+else
+    errors=$(echo "$response" | sed -r 's/.*<ErrCount>([0-9]+)<\/ErrCount>.*/\1/')
+fi
+
+log "$response" "$errors" 'xml'
+
 echo $ip > $LAST_IP_FILE
 exit 0

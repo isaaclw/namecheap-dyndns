@@ -17,3 +17,8 @@ The comamndline tool has the following switches:
 - `cp pw_file.sh ~/.namecheap_file.sh`
 - `chmod 600~/.namecheap_file.sh`
 - Then create a crontab entry for the path to this script.
+
+# Dependancies
+These aren't needed, but provide a better experience:
+- xmlstarlet -- proper xml parsing of values (instead of sed)
+- xmllint -- pretty-prints the xml
