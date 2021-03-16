@@ -7,25 +7,51 @@
 # */15 * * * * ddns-update >/dev/null 2>&1
 # dont forget to change your own domain & password
 
-# uncomment if you want internet connection check before running
-#while ! ping -c 1 -W 1 8.8.8.8; do
-#    echo "DDNS-UPDATE: Waiting internet connection.."
-#    sleep 2
-#done
 last_ip_file="/tmp/last_ip"
+WAIT=
+QUIET=
+
+while getopts "qfwh" flag; do
+    case $flag in
+        q|quiet) QUIET=1;;
+        f|force) rm "$last_ip_file";;
+        w|wait) WAIT=1;;
+        h|help) echo "usage: $(basename $0)
+            -q --quiet
+            -f --force
+            -w --wait
+            -h --help"; exit 0;;
+    esac
+    lastflag="$flag"
+    shift $((OPTIND - 1)); OPTIND=1
+done
+
+log() {
+    if [ -z "$QUIET" ]; then
+        echo "$@"
+    fi
+}
+
+# uncomment if you want internet connection check before running
+while [ -n "$WAIT" ] && ! ping -c 1 -W 1 8.8.8.8 >/dev/null; do
+    log "DDNS-UPDATE: Waiting internet connection.."
+    sleep 2
+done
+
 last_ip=$(cat $last_ip_file)
-echo "DDNS-UPDATE: OK, Getting public IP address"
+log "DDNS-UPDATE: OK, Getting public IP address"
 ip=$(curl -s http://dynamicdns.park-your-domain.com/getip)
 if [ "$ip" == "$last_ip" ]; then
-	echo "IP Still same, not need to update."
+	log "IP Still same, not need to update."
 	exit 0
 fi
 
-echo "DDNS-UPDATE: Public IP is: $ip, Updating IP..."
+log "DDNS-UPDATE: Public IP is: $ip, Updating IP..."
 
 host=@
 domain=your-own-domain.tld
 password=your-own-password
 response=$(curl -s "https://dynamicdns.park-your-domain.com/update?host=$host&domain=$domain&password=$password&ip=$ip")
-echo $response
+log $response
 echo $ip > $last_ip_file
+echo 0
