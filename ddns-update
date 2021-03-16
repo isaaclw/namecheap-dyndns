@@ -29,11 +29,14 @@ done
 log() {
     errors="$2"
     xml="$3"
+    if [ "$errors" == "0" ]; then
+        errors=
+    fi
 
     if [ -n "$errors" ] || [ -z "$QUIET" ]; then
         echo "$1"
     fi | if [ "$xml" == 'xml' ] && which xmllint > /dev/null; then
-        xmllint --format -
+        xmllint --format - 2>/dev/null
     else
         cat
     fi
