@@ -42,15 +42,14 @@ last_ip=$(cat $LAST_IP_FILE)
 log "DDNS-UPDATE: OK, Getting public IP address"
 ip=$(curl -s http://dynamicdns.park-your-domain.com/getip)
 if [ "$ip" == "$last_ip" ]; then
-	log "IP Still same, not need to update."
+	log "IP Still same, no update needed."
 	exit 0
 fi
 
 log "DDNS-UPDATE: Public IP is: $ip, Updating IP..."
 
-host=@
-domain=your-own-domain.tld
-password=your-own-password
+source ~/.namecheap_file.sh
+
 response=$(curl -s "https://dynamicdns.park-your-domain.com/update?host=$host&domain=$domain&password=$password&ip=$ip")
 log $response
 echo $ip > $LAST_IP_FILE
