@@ -12,3 +12,8 @@ The comamndline tool has the following switches:
   -f  --force    :    Ignores the existence of a 'cached' ip, and updates anyway
   
   -q  --quiet    :    Runs the script with minimal output, and only prints errors.
+
+# Installation instructions:
+- `cp pw_file.sh ~/.namecheap_file.sh`
+- `chmod 600~/.namecheap_file.sh`
+- Then create a crontab entry for the path to this script.
