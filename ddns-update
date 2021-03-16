@@ -1,4 +1,4 @@
-!/usr/bin/bash
+#!/usr/bin/bash
 # See knowlegebase article to config namecheap
 # https://www.namecheap.com/support/knowledgebase/article.aspx/43/11/how-do-i-set-up-a-host-for-dynamic-dns
 # make it executable `chmod +x ddns-update`
@@ -13,7 +13,7 @@
 #    sleep 2
 #done
 last_ip_file="/tmp/last_ip"
-last_ip=`cat $last_ip_file`
+last_ip=$(cat $last_ip_file)
 echo "DDNS-UPDATE: OK, Getting public IP address"
 ip=$(curl -s http://dynamicdns.park-your-domain.com/getip)
 if [ "$ip" == "$last_ip" ]; then
