@@ -38,7 +38,7 @@ while [ -n "$WAIT" ] && ! ping -c 1 -W 1 8.8.8.8 >/dev/null; do
     sleep 2
 done
 
-last_ip=$(cat $LAST_IP_FILE)
+last_ip=$(cat $LAST_IP_FILE 2>/dev/null)
 log "DDNS-UPDATE: OK, Getting public IP address"
 ip=$(curl -s http://dynamicdns.park-your-domain.com/getip)
 if [ "$ip" == "$last_ip" ]; then
